@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: "0.6.0"
+  version: 0.7.0
 
 package:
   name: speculators
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/speculators/speculators-${{ version }}.tar.gz
-  sha256: 6f8babb769bc1719883f2020f745fdc44c481d33d94114695f219011dc3fee03
+  sha256: 62ebba7655b7a09a0a4e672d8b11aea01b0987d9440381fe0537983c01a9d41b
 
 build:
   number: 0
@@ -37,13 +37,12 @@ requirements:
     - pydantic-settings >=2.0.0
     - rich
     - safetensors
-    - pytorch >=2.9.0,<=2.12.0
+    - pytorch >=2.9.0,<=2.13.0
     - torchaudio
     - torchvision
-    - tqdm >=4.66.3,<=4.68.2
-    - transformers >=4.56.1,<5.11.0
+    - tqdm >=4.66.3,<=4.70.0
+    - transformers >=4.56.1,<5.15.0
     - typer >=0.12.0
-
 tests:
   - python:
       python_version:
