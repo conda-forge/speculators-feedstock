@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: 0.7.0
+  version: "0.7.0.1"
 
 package:
   name: speculators
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/speculators/speculators-${{ version }}.tar.gz
-  sha256: 62ebba7655b7a09a0a4e672d8b11aea01b0987d9440381fe0537983c01a9d41b
+  sha256: 577f6a117c3c0b783ae9eff7a85fda0758588ba4182e1a195581d7b06495d2ff
 
 build:
   number: 0
