@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: "0.8.0"
+  version: 0.8.1
 
 package:
   name: speculators
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/speculators/speculators-${{ version }}.tar.gz
-  sha256: c42a30578abfef54040695930571f91e7866d4936980ed4686796e67abee69f9
+  sha256: acc50593b3af3898ab0add47b4288375291c68c389149c2f38f41cb16d3c1ccb
 
 build:
   number: 0
@@ -27,7 +27,7 @@ requirements:
     - python >=${{ python_min }}
     - hs-connectors ${{ version }}.*
     - click
-    - datasets >=4.0.0,<=5.0.0
+    - datasets >=4.0.0,<=5.0.1
     - huggingface_hub
     - loguru >=0.7.2,<=0.7.3
     - numpy >=2.0.0,<=2.4.6
@@ -42,8 +42,11 @@ requirements:
     - torchaudio
     - torchvision
     - tqdm >=4.66.3,<=4.70.0
-    - transformers >=4.56.1,<5.15.0
+    - transformers >=5.0.0,<5.17.0
     - typer >=0.12.0
+    - httpx
+    - hs-connectors >0.8.0,<=0.8.1
+    - aiohttp
 tests:
   - python:
       python_version:
