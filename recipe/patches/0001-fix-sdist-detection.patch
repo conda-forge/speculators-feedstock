@@ -1,0 +1,36 @@
+From d452a919be67145a2309a9fb140c3fec11a8f10b Mon Sep 17 00:00:00 2001
+From: "Uwe L. Korn" <uwe.korn@quantco.com>
+Date: Mon, 26 Oct 2026 09:42:05 +0000
+Subject: [PATCH] Detect sdist builds by PKG-INFO instead of directory name
+
+conda-build and rattler-build extract the sdist into a directory that is not
+named speculators-<version>, so the directory-name heuristic fails and setup.py
+falls back to computing a version from git tags. There are no tags in an
+extracted sdist, so the build produces the wrong version and pins the wrong
+hs-connectors requirement.
+---
+ setup.py | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 8fe5d4d..2bb2534 100644
+--- a/setup.py
++++ b/setup.py
+@@ -100,8 +100,12 @@ def read_existing_version(version_py: Path) -> tuple[Version, str | None, int]:
+ 
+ 
+ def building_from_sdist() -> bool:
+-    # sdist extracts as speculators-<version>/setup.py
+-    return REPO_ROOT.name.startswith("speculators-")
++    # An extracted sdist always has a PKG-INFO at its root. The directory name
++    # is not reliable, as some tooling (conda-build, rattler-build) extracts the
++    # archive into a directory of its own choosing.
++    return (REPO_ROOT / "PKG-INFO").is_file() or REPO_ROOT.name.startswith(
++        "speculators-"
++    )
+ 
+ 
+ def write_version_files() -> tuple[Path, Path]:
+-- 
+2.43.0
+

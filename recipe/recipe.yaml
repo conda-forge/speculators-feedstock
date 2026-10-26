@@ -10,22 +10,34 @@ package:
 source:
   url: https://pypi.org/packages/source/s/speculators/speculators-${{ version }}.tar.gz
   sha256: ad5e21eedc89f95096d92ceeccb794df88e24394615f5e8f02957485aea3d8cf
+  patches:
+    # setup.py only treats a source tree as an sdist if the directory is named
+    # speculators-<version>, so from a rattler-build work dir it recomputes a
+    # version from git tags (which do not exist) and pins the wrong
+    # hs-connectors release.
+    - patches/0001-fix-sdist-detection.patch
 
 build:
   number: 0
   noarch: python
-  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  script:
+    content: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+    env:
+      # setup.py derives the hs-connectors requirement from the build type and
+      # defaults to "nightly", which emits a range that excludes the matching
+      # release of hs-connectors and fails `pip check`.
+      SPECULATORS_BUILD_TYPE: release
 
 requirements:
   host:
     - python ${{ python_min }}.*
-    - setuptools >=82.0.1
+    - setuptools >=84.0.0
     - setuptools-git-versioning >=2.0,<3
     - packaging
     - pip
   run:
     - python >=${{ python_min }}
-    - hs-connectors ${{ version }}.*
+    - hs-connectors ==${{ version }}
     - click
     - datasets >=4.0.0,<=5.1.0
     - huggingface_hub
@@ -45,9 +57,7 @@ requirements:
     - transformers >=5.0.0,<=5.19.0
     - typer >=0.12.0
     - httpx
-    - hs-connectors >0.8.0,<=0.8.1
     - aiohttp
-    - hs-connectors >0.8.0,<=0.9.0
 tests:
   - python:
       python_version:
