@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: 0.8.1
+  version: 0.9.0
 
 package:
   name: speculators
@@ -9,28 +9,40 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/speculators/speculators-${{ version }}.tar.gz
-  sha256: acc50593b3af3898ab0add47b4288375291c68c389149c2f38f41cb16d3c1ccb
+  sha256: ad5e21eedc89f95096d92ceeccb794df88e24394615f5e8f02957485aea3d8cf
+  patches:
+    # setup.py only treats a source tree as an sdist if the directory is named
+    # speculators-<version>, so from a rattler-build work dir it recomputes a
+    # version from git tags (which do not exist) and pins the wrong
+    # hs-connectors release.
+    - patches/0001-fix-sdist-detection.patch
 
 build:
   number: 0
   noarch: python
-  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  script:
+    content: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+    env:
+      # setup.py derives the hs-connectors requirement from the build type and
+      # defaults to "nightly", which emits a range that excludes the matching
+      # release of hs-connectors and fails `pip check`.
+      SPECULATORS_BUILD_TYPE: release
 
 requirements:
   host:
     - python ${{ python_min }}.*
-    - setuptools >=82.0.1
+    - setuptools >=84.0.0
     - setuptools-git-versioning >=2.0,<3
     - packaging
     - pip
   run:
     - python >=${{ python_min }}
-    - hs-connectors ${{ version }}.*
+    - hs-connectors ==${{ version }}
     - click
-    - datasets >=4.0.0,<=5.0.1
+    - datasets >=4.0.0,<=5.1.0
     - huggingface_hub
     - loguru >=0.7.2,<=0.7.3
-    - numpy >=2.0.0,<=2.4.6
+    - numpy >=2.0.0,<=2.5.4
     - openai >=2.0.0
     - protobuf
     - psutil
@@ -38,14 +50,13 @@ requirements:
     - pydantic-settings >=2.0.0
     - rich
     - safetensors
-    - pytorch >=2.9.0,<=2.13.0
+    - pytorch >=2.9.0,<=2.14.1
     - torchaudio
     - torchvision
-    - tqdm >=4.66.3,<=4.70.0
-    - transformers >=5.0.0,<5.17.0
+    - tqdm >=4.66.3,<=4.70.1
+    - transformers >=5.0.0,<=5.19.0
     - typer >=0.12.0
     - httpx
-    - hs-connectors >0.8.0,<=0.8.1
     - aiohttp
 tests:
   - python:
